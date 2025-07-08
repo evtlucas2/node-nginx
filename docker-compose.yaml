@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  db:
+    image: evtlucas/hello-mysql
+    command: --innodb-use-native-aio=0
+    container_name: db
+    restart: always
+    tty: true
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=peopledb
+      - MYSQL_ROOT_PASSWORD=people
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=people_user
+    networks:
+      - nodenet
+
+  node:
+    image: evtlucas/hello-node
+    container_name: node
+    tty: true
+    networks:
+      - nodenet
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - node
+    networks:
+      - nodenet
+    restart: always
+
+networks:
+  nodenet:
+    driver: bridge
