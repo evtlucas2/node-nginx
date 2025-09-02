@@ -20,6 +20,8 @@ services:
   node:
     image: evtlucas/hello-node
     container_name: node
+    volumes:
+      - ./:/usr/src/app
     tty: true
     networks:
       - nodenet

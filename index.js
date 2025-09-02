@@ -17,7 +17,7 @@ app.get('/', async (req, res) => {
   let sql = "insert into people(name) values('name')";
   await conn.query(sql);
   const [rows] = await conn.query("select * from people");
-  let html = '<h1>Full Cycle Rocks</h1>';
+  let html = '<h1>Full Cycle Rocks!</h1>';
   html += "<table><tr><th>Id</th><th>Name</th></tr>";
   rows.forEach(row => {
     html += "<tr><td>" + row.id + "</td><td>" + row.name + "</tr></td>";
