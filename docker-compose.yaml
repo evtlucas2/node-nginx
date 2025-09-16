@@ -18,7 +18,7 @@ services:
       - nodenet
 
   node:
-    image: evtlucas/hello-node
+    build: .
     container_name: node
     volumes:
       - ./:/usr/src/app
