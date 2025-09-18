@@ -5,6 +5,10 @@ WORKDIR /usr/src/app
 # npm init
 # npm install express --save
 
+COPY package*.json ./
+
+RUN npm install
+
 COPY . .
 
 EXPOSE 8080
