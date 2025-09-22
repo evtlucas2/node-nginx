@@ -1,14 +1,13 @@
-version: '3'
-
 services:
   db:
-    image: evtlucas/hello-mysql
+    image: mysql:5.7
     command: --innodb-use-native-aio=0
     container_name: db
     restart: always
     tty: true
     volumes:
       - ./mysql:/var/lib/mysql
+      - ./create_table.sql:/docker-entrypoint-initdb.d/create_table.sql
     environment:
       - MYSQL_DATABASE=peopledb
       - MYSQL_ROOT_PASSWORD=people
@@ -16,6 +15,11 @@ services:
       - MYSQL_PASSWORD=people_user
     networks:
       - nodenet
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
 
   node:
     build: .
@@ -26,7 +30,8 @@ services:
     networks:
       - nodenet
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   nginx:
     image: nginx:alpine
