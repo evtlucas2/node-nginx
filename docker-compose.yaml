@@ -3,8 +3,8 @@ services:
     image: mysql:5.7
     command: --innodb-use-native-aio=0
     container_name: db
-    restart: always
-    tty: true
+    restart: always # Container will always restart no matter what happens with it
+    tty: true # allocates pseudo-terminal for the container / keep the container running
     volumes:
       - ./mysql:/var/lib/mysql
       - ./create_table.sql:/docker-entrypoint-initdb.d/create_table.sql
@@ -15,7 +15,7 @@ services:
       - MYSQL_PASSWORD=people_user
     networks:
       - nodenet
-    healthcheck:
+    healthcheck: # Mechanism to guarantee if a container is in a healthy state
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
       interval: 10s
       timeout: 10s
@@ -26,6 +26,7 @@ services:
     container_name: node
     volumes:
       - ./:/usr/src/app
+      - /usr/src/app/node_modules # Anonymous volume 
     tty: true
     networks:
       - nodenet
